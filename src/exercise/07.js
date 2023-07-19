@@ -33,7 +33,11 @@ function App() {
           <li>
             <button onClick={() => removeItem(item)}>remove</button>{' '}
             <label htmlFor={`${item.id}-input`}>{item.value}</label>{' '}
-            <input id={`${item.id}-input`} defaultValue={item.value} />
+            <input
+              key={item.id}
+              id={`${item.id}-input`}
+              defaultValue={item.value}
+            />
           </li>
         ))}
       </ul>

@@ -6,16 +6,73 @@
   <script src="https://unpkg.com/react@18.1.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18.1.0/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.12.4/babel.js"></script>
+  <script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
+
   <script type="text/babel">
     // 🐨 Make a function called `message` which returns the JSX we want to share
 
-    // 🐨 use that function in place of the divs below with:
-    // 💰 {message({children: 'Hello World'})} {message({children: 'Goodbye World'})}
+    // 👎 As a JS function
+    // const message = (props) => <div className="message" {...props}/>
+    // or...
+    const message = ({children}) => <div className="message">{children}</div>
+
+    // Extra Credit
+    // 👎
+    const hello = React.createElement(message, {children: 'HELLLLLLOOOOO!'})
+
+    // 👍
+    const Message = ({children}) => <div className="message">{children}</div>
+
+    function MessageWithPropTypes({subject, greeting, num}) {
+      return (
+        <div className="message">
+          {greeting}, {subject} {num}
+        </div>
+      )
+    }
+
+    const ManualPropTypes = {
+      string(props, propName, componentName) {
+        if (typeof props[propName] !== 'string') {
+          return new Error('Prop greeting must be of type string')
+        }
+      },
+    }
+
+    MessageWithPropTypes.propTypes = {
+      greeting: ManualPropTypes.string,
+      num: PropTypes.number.isRequired,
+    }
+
     const element = (
-      <div className="container">
-        <div className="message">Hello World</div>
-        <div className="message">Goodbye World</div>
-      </div>
+      <React.StrictMode>
+        <div className="container">
+          {
+            // 👎 Here we are calling the message function
+            message({children: 'Hello World'})
+          }
+          {message({children: 'Goodbye World'})}
+
+          {
+            // 👎 Calling React.createElement in our hello variable
+            // First param is the function name, second param is the props
+            hello
+          }
+
+          <Message>YES!!! This is a good component!</Message>
+
+          <MessageWithPropTypes
+            greeting="Hello!"
+            subject="WithProptypes validation"
+            num={1}
+          />
+
+          <MessageWithPropTypes
+            greeting={1}
+            subject="Uh oh! WithProptypes validation - num is required"
+          />
+        </div>
+      </React.StrictMode>
     )
 
     // 💯 This is only the first step to making actual React components. The rest is in the extra credit!

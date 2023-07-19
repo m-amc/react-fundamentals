@@ -9,23 +9,61 @@ function UsernameForm({onSubmitUsername}) {
   // `event.preventDefault()` to prevent the default behavior of form submit
   // events (which refreshes the page).
   // 📜 https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault
-  //
-  // 🐨 get the value from the username input (using whichever method
-  // you prefer from the options mentioned in the instructions)
-  // 💰 For example: event.target.elements[0].value
-  // 🐨 Call `onSubmitUsername` with the value of the input
 
-  // 🐨 add the onSubmit handler to the <form> below
+  const inputRef = React.useRef()
 
-  // 🐨 make sure to associate the label to the input.
-  // to do so, set the value of 'htmlFor' prop of the label to the id of input
+  const [error, setError] = React.useState(null)
+  const [username, setUsername] = React.useState('')
+
+  const handleSubmit = event => {
+    event.preventDefault()
+    // getting input value using event.target.elements
+    // onSubmitUsername(event.target.elements.usernameInput.value)
+
+    // getting input value using ref
+    // onSubmitUsername(inputRef.current.value)
+
+    // using the username state
+    onSubmitUsername(username)
+  }
+
+  const handleChange = event => {
+    const {value} = event.target
+    const isValid = value === value.toLowerCase()
+
+    setError(isValid ? null : 'Username must be lower case')
+  }
+
+  const handleUsername = event => {
+    const {value} = event.target
+    setUsername(value.toLowerCase())
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div>
-        <label>Username:</label>
-        <input type="text" />
+        <label htmlFor="usernameInput">Username:</label>
+        {/* <input type="text" id="usernameInput" /> */}
+        <input type="text" ref={inputRef} onChange={handleChange} />
       </div>
-      <button type="submit">Submit</button>
+      {error && (
+        <div role="alert" style={{color: 'red'}}>
+          {error}
+        </div>
+      )}
+      <div style={{marginTop: 40, marginBottom: 40}}>
+        <div>This is a "controlled" input using value prop</div>
+        <label htmlFor="username">Username:</label>
+        <input
+          type="text"
+          id="username"
+          onChange={handleUsername}
+          value={username}
+        />
+      </div>
+      <button type="submit" disabled={Boolean(error)}>
+        Submit
+      </button>
     </form>
   )
 }
